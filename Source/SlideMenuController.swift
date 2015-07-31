@@ -163,8 +163,6 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
     }
     
     public override func openLeft() {
-        setOpenWindowLevel()
-        
         //leftViewControllerのviewWillAppearを呼ぶため
         leftViewController?.beginAppearanceTransition(isLeftHidden(), animated: true)
         openLeftWithVelocity(0.0)
@@ -173,8 +171,6 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
     }
     
     public override func openRight() {
-        setOpenWindowLevel()
-        
         //menuViewControllerのviewWillAppearを呼ぶため
         rightViewController?.beginAppearanceTransition(isRightHidden(), animated: true)
         openRightWithVelocity(0.0)
@@ -183,13 +179,11 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
     public override func closeLeft() {
         leftViewController?.beginAppearanceTransition(isLeftHidden(), animated: true)
         closeLeftWithVelocity(0.0)
-        setCloseWindowLebel()
     }
     
     public override func closeRight() {
         rightViewController?.beginAppearanceTransition(isRightHidden(), animated: true)
         closeRightWithVelocity(0.0)
-        setCloseWindowLebel()
     }
     
     
@@ -291,7 +285,6 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
                 
                 leftViewController?.beginAppearanceTransition(LeftPanState.wasHiddenAtStartOfPan, animated: true)
                 addShadowToView(leftContainerView)
-                setOpenWindowLevel()
             case UIGestureRecognizerState.Changed:
                 
                 var translation: CGPoint = panGesture.translationInView(panGesture.view!)
@@ -315,7 +308,6 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
                         leftViewController?.beginAppearanceTransition(false, animated: true)
                     }
                     closeLeftWithVelocity(panInfo.velocity)
-                    setCloseWindowLebel()
                     
                     track(.FlickClose)
 
@@ -353,7 +345,6 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
             
             rightViewController?.beginAppearanceTransition(RightPanState.wasHiddenAtStartOfPan, animated: true)
             addShadowToView(rightContainerView)
-            setOpenWindowLevel()
         case UIGestureRecognizerState.Changed:
             
             var translation: CGPoint = panGesture.translationInView(panGesture.view!)
@@ -376,7 +367,6 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
                     rightViewController?.beginAppearanceTransition(false, animated: true)
                 }
                 closeRightWithVelocity(panInfo.velocity)
-                setCloseWindowLebel()
             }
         default:
             break
@@ -506,7 +496,6 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
     public override func toggleLeft() {
         if isLeftOpen() {
             closeLeft()
-            setCloseWindowLebel()
             // closeMenuはメニュータップ時にも呼ばれるため、closeタップのトラッキングはここに入れる
             
             track(.TapClose)
@@ -526,7 +515,6 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
     public override func toggleRight() {
         if isRightOpen() {
             closeRight()
-            setCloseWindowLebel()
         } else {
             openRight()
         }
@@ -730,26 +718,6 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
         mainContainerView.userInteractionEnabled = true
     }
     
-    private func setOpenWindowLevel() {
-        if (SlideMenuOptions.hideStatusBar) {
-            dispatch_async(dispatch_get_main_queue(), {
-                if let window = UIApplication.sharedApplication().keyWindow {
-                    window.windowLevel = UIWindowLevelStatusBar + 1
-                }
-            })
-        }
-    }
-    
-    private func setCloseWindowLebel() {
-        if (SlideMenuOptions.hideStatusBar) {
-            dispatch_async(dispatch_get_main_queue(), {
-                if let window = UIApplication.sharedApplication().keyWindow {
-                    window.windowLevel = UIWindowLevelNormal
-                }
-            })
-        }
-    }
-    
     private func setUpViewController(targetView: UIView, targetViewController: UIViewController?) {
         if let viewController = targetViewController {
             addChildViewController(viewController)
@@ -769,7 +737,6 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
     }
     
     public func closeLeftNonAnimation(){
-        setCloseWindowLebel()
         var finalXOrigin: CGFloat = leftMinOrigin()
         var frame: CGRect = leftContainerView.frame;
         frame.origin.x = finalXOrigin
@@ -781,7 +748,6 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
     }
     
     public func closeRightNonAnimation(){
-        setCloseWindowLebel()
         var finalXOrigin: CGFloat = CGRectGetWidth(view.bounds)
         var frame: CGRect = rightContainerView.frame
         frame.origin.x = finalXOrigin
