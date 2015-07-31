@@ -3,6 +3,7 @@
 //
 //  Created by Yuji Hato on 12/3/14.
 //
+//  Forked by DomainGroupOSS for minor modifications
 
 import Foundation
 import UIKit
